@@ -1,15 +1,47 @@
 #!/bin/bash
 
-# Ensure a file is provided
-if [[ $# -lt 1 ]]; then
-    echo "Usage: showrandom <file> [number_of_random_rows]"
-    exit 1
-fi
+# Default values
+num_rows=5
+input_file=""
+save_file=""
 
-num_rows=${2:-5}  # Default to 5 if no second argument is provided
+# Function to display usage
+usage() {
+    echo "Usage: randomrows -f <input_file> [-n <number_of_rows>] [-s <save_file>]"
+    echo "Options:"
+    echo "  -f    Input file (required)"
+    echo "  -n    Number of random rows (default: 5)"
+    echo "  -s    Save output to CSV file"
+    echo "  -h    Display this help message"
+    exit 1
+}
+
+# Parse command line arguments
+while getopts "f:n:s:h" opt; do
+    case $opt in
+        f) input_file="$OPTARG";;
+        n) num_rows="$OPTARG";;
+        s) save_file="$OPTARG";;
+        h) usage;;
+        ?) usage;;
+    esac
+done
+
+# Check if input file is provided
+if [ -z "$input_file" ]; then
+    echo "Error: Input file is required"
+    usage
+fi
 
 # Ensure sorting works even with special characters
 export LC_ALL=C
 
-# Use awk, sort, and head to extract random rows
-{ head -n 1 "$1"; tail -n +2 "$1" | awk 'BEGIN {srand()} {print rand(), $0}' | sort -t ',' -k1,1n | cut -d' ' -f2- | head -n "$num_rows"; }
+# Generate random rows
+if [ -z "$save_file" ]; then
+    # Display to stdout
+    { head -n 1 "$input_file"; tail -n +2 "$input_file" | awk 'BEGIN {srand()} {print rand(), $0}' | sort -t ',' -k1,1n | cut -d' ' -f2- | head -n "$num_rows"; }
+else
+    # Save to file
+    { head -n 1 "$input_file"; tail -n +2 "$input_file" | awk 'BEGIN {srand()} {print rand(), $0}' | sort -t ',' -k1,1n | cut -d' ' -f2- | head -n "$num_rows"; } > "$save_file"
+    echo "Results saved to $save_file"
+fi
