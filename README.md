@@ -12,11 +12,10 @@ brew install randomrows
 ## Usage
 
 ```bash
-randomrows -f <input_file> [-n <number_of_rows>] [-s <save_file>] [-h]
+randomrows <input_file> [-n <number_of_rows>] [-s <save_file>] [-h]
 ```
 
 Options:
-- `-f` Input file (required)
 - `-n` Number of random rows (default: 5)
 - `-s` Save output to CSV file
 - `-h` Display help message
@@ -25,11 +24,11 @@ Options:
 
 ```bash
 # Display 10 random rows from data.csv
-randomrows -f data.csv -n 10
+randomrows data.csv -n 10
 
 # Save 5 random rows to sample.csv
-randomrows -f data.csv -s sample.csv
+randomrows data.csv -s sample.csv
 
 # Display 15 random rows and save to output.csv
-randomrows -f data.csv -n 15 -s output.csv
+randomrows data.csv -n 15 -s output.csv
 ```
